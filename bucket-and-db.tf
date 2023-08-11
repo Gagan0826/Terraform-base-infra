@@ -17,7 +17,7 @@ resource "aws_s3_bucket" "my_bucket" {
 resource "aws_dynamodb_table" "my_table" {
   name           = "MyLockTable"
   billing_mode   = "PAY_PER_REQUEST" 
-  hash_key       = "LockID"
+  hash_key       = "LockId"
   attribute {
     name = "LockId"
     type = "S"
