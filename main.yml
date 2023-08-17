@@ -1,97 +1,14 @@
----
+
 - name: Install Jenkins, Docker, Ansible, and Terraform
   hosts: nodes
-  become: true
+  become: yes
+  roles:
+    - install_dependencies
+    - configure_docker
+    - configure_jenkins
+    - configure_terraform
+    - install_ansible
+    - install_jenkins
+    - install_docker
+    - install_terraform
 
-  tasks:
-    - name: Update apt cache (for Ubuntu/Debian)
-      apt:
-        update_cache: yes
-      when: ansible_os_family == "Debian"
-
-    - name: Install required packages (for Ubuntu/Debian)
-      apt:
-        name:
-        - openjdk-17-jre
-        - curl
-        - software-properties-common
-        - docker.io
-        - python3-pip
-        state: present
-
-    - name: Add Docker GPG key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: Add Docker APT repository
-      apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: Install Ansible
-      pip:
-        name: ansible
-        state: present
-
-    - name: Download Jenkins keyring
-      shell: curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-      args:
-        executable: /bin/bash
-
-    - name: Add Jenkins APT repository
-      lineinfile:
-        path: /etc/apt/sources.list.d/jenkins.list
-        line: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/"
-        create: yes
-
-    - name: Download HashiCorp GPG key
-      shell: wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-      args:
-        executable: /bin/bash
-
-    - name: Add HashiCorp APT repository
-      shell: echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-      args:
-        executable: /bin/bash
-
-    - name: Update apt cache with Jenkins and HashiCorp repositories
-      apt:
-        update_cache: yes
-        force_apt_get: yes
-
-    - name: Install Jenkins
-      apt:
-        name: jenkins
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: Start and enable Jenkins service
-      systemd:
-        name: jenkins
-        enabled: yes
-        state: started
-      when: ansible_os_family == "Debian"
-
-    - name: Start and enable Docker service
-      systemd:
-        name: docker
-        enabled: yes
-        state: started
-
-    - name: install unzip
-      apt:
-          name: unzip
-    - name: Install Terraform
-      block:
-        - name: Download Terraform
-          get_url:
-            url: https://releases.hashicorp.com/terraform/1.0.5/terraform_1.0.5_linux_amd64.zip
-            dest: /tmp/terraform.zip
-          register: terraform_download_result
-
-        - name: Extract Terraform
-          command: unzip -o /tmp/terraform.zip -d /usr/local/bin/
-          when: terraform_download_result is success

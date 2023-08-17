@@ -1,0 +1,12 @@
+---
+# tasks file for install_dependencies
+
+- name: Update apt cache (for Ubuntu/Debian)
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install required packages (for Ubuntu/Debian)
+  apt:
+    name: "{{packages}}"
+    state: present

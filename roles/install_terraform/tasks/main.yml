@@ -1,0 +1,17 @@
+---
+# tasks file for install_terraform
+
+- name: install unzip
+  apt:
+      name: unzip
+- name: Install Terraform
+  block:
+    - name: Download Terraform
+      get_url:
+        url: https://releases.hashicorp.com/terraform/1.0.5/terraform_1.0.5_linux_amd64.zip
+        dest: /tmp/terraform.zip
+      register: terraform_download_result
+
+    - name: Extract Terraform
+      command: unzip -o /tmp/terraform.zip -d /usr/local/bin/
+      when: terraform_download_result is success

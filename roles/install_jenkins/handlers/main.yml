@@ -1,0 +1,8 @@
+---
+# handlers file for install_jenkins
+- name: Start Jenkins service
+  systemd:
+    name: jenkins
+    enabled: yes
+    state: started
+  when: ansible_os_family == "Debian"

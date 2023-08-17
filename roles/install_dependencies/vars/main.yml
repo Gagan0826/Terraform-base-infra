@@ -1,0 +1,8 @@
+---
+# vars file for install_dependencies
+
+packages:
+  - openjdk-17-jre
+  - curl
+  - software-properties-common
+  - python3-pip

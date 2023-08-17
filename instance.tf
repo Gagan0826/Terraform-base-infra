@@ -7,9 +7,14 @@ resource "aws_instance" "name" {
   instance_type = "t2.micro"
   key_name = "w1"
   security_groups = ["my_security_group"]
-
+   root_block_device {
+    volume_size           = "20"
+    volume_type           = "gp2"
+    encrypted             = true
+    delete_on_termination = true
+  }
   tags = {
-    Name = "ins-1"
+    Name = "Jenkins-Server"
   }
   provisioner "local-exec" {
     command = "echo \"[nodes]\" > inventory && echo \"node1 ansible_host=${aws_instance.name.public_ip} ansible_connection=ssh ansible_user=ubuntu\" >> inventory"

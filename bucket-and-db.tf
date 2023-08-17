@@ -1,5 +1,3 @@
-
-
 resource "aws_s3_bucket" "my_bucket" {
   bucket = "terr-bucket-backend-1"
   acl    = "private"
@@ -10,7 +8,6 @@ resource "aws_s3_bucket" "my_bucket" {
     Name = "My S3 Bucket"
   }
 }
-
 
 resource "aws_dynamodb_table" "my_table" {
   name           = "MyLockTable"

@@ -1,0 +1,6 @@
+- packages:
+      - openjdk-17-jre
+      - curl
+      - software-properties-common
+      - docker.io
+      - python3-pip
